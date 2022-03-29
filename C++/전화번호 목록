@@ -1,0 +1,14 @@
+#include <string>
+#include <vector>
+#include <string.h>
+#include <algorithm>
+
+using namespace std;
+
+bool solution(vector<string> phone_book) {
+    sort(phone_book.begin(),phone_book.end());
+    auto shortLen = [&](string &a, string &b){if(a.length() <= b.length())return a.length(); return b.length();};
+    for(int i=0; i<phone_book.size()-1; i++)
+        if(!strncmp(phone_book[i].c_str(),phone_book[i+1].c_str(),shortLen(phone_book[i],phone_book[i+1]))) return false;    
+    return true;
+}
