@@ -1,0 +1,107 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+void ToLower(string& str)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		str.at(i) = tolower(str.at(i));
+	}
+}
+
+void GetRidOfChar(string &str)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		if ((str.at(i) >= 97 && str.at(i) <= 122) ||
+			(str.at(i) >= 48 && str.at(i) <= 57) ||
+			str.at(i) == 45 || str.at(i) == 46 || str.at(i) == 95)
+		{
+			continue;
+		}
+		else
+		{
+			str.erase(i, 1);
+			i--;
+		}
+	}
+}
+
+void TransChar(string &str)
+{
+	for (int i = 0; i < str.length(); i++)
+	{
+		int cnt = 0;
+
+		if (str.at(i) == '.')
+		{
+			while (i + (cnt + 1) < str.length() && str.at(i + (cnt+1)) == '.')
+			{
+				cnt++;
+			}
+
+			str.replace(i,cnt+1, ".");
+		}
+	}
+}
+
+void GetRidOfEnd(string &str)
+{
+	if (str.at(0) == '.')
+		str.erase(0, 1);
+
+	if ((str.length())>=1 && str.at(str.length() - 1) == '.')
+		str.erase(str.length() - 1, 1);
+}
+
+void IsEmptyInsert(string &str)
+{
+	if(!str.length())
+		str = "a";
+}
+
+void CutLenth(string &str)
+{
+	if (str.length() >= 16)
+	{
+		str = str.substr(0, 15);
+	}
+
+	if (str.at(str.length() - 1) == '.')
+	{
+		str.erase(str.length() - 1, 1);
+	}
+}
+
+void AppendStr(string &str)
+{
+	if (str.length() <= 2)
+	{
+		while (str.length() < 3)
+		{
+			str.append(1,str.at(str.length() - 1));
+		}
+	}
+}
+
+string solution(string new_id) {
+    //string answer = "";
+    
+    ToLower(new_id);
+
+	GetRidOfChar(new_id);
+
+	TransChar(new_id);
+
+	GetRidOfEnd(new_id);
+
+	IsEmptyInsert(new_id);
+
+	CutLenth(new_id);
+
+	AppendStr(new_id);
+    
+    return new_id;
+}
