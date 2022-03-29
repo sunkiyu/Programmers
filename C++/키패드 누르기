@@ -1,0 +1,95 @@
+#include <string>
+#include <vector>
+#include <stdio.h>
+#include <cstdlib>
+
+using namespace std;
+
+string solution(vector<int> numbers, string hand) {
+    string answer = "";
+    
+    if(numbers.size()>1000||numbers.size()<0)
+        return answer;
+    
+    int keypad[4][3] = { {1,2,3},{4,5,6},{7,8,9},{10,0,11} };
+
+	int LCurX = 0;
+	int LCurY = 3;
+
+	int RCurX = 2;
+	int RCurY = 3;
+
+	for (int i = 0; i < numbers.size(); i++)
+	{
+		bool exitExternal = false;
+        
+		for (int j = 0; j < 3; j++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				if (numbers[i] == keypad[k][j])
+				{
+					if (j == 0)
+					{
+						answer.append("L");
+						LCurX = j;
+						LCurY = k;
+						exitExternal = true;
+						break;
+					}
+					else if (j == 2)
+					{
+						answer.append("R");
+						RCurX = j;
+						RCurY = k;
+						exitExternal = true;
+						break;
+					}
+					else
+					{
+                        int Llength = abs(LCurX - j) + abs(LCurY - k);
+						int Rlength = abs(RCurX - j) + abs(RCurY - k);
+                        
+                        if(Llength == Rlength)
+						{
+							if (hand == "right")
+							{
+								answer.append("R");
+								RCurX = j;
+								RCurY = k;
+							}
+							else
+							{
+								answer.append("L");
+								LCurX = j;
+								LCurY = k;
+							}
+							exitExternal = true;
+							break;
+						}
+
+						else if (Llength >Rlength)
+						{
+							answer.append("R");
+							RCurX = j;
+							RCurY = k;
+						}
+						else
+						{
+							answer.append("L");
+							LCurX = j;
+							LCurY = k;
+						}
+
+						exitExternal = true;
+						break;
+					}
+				}
+			}
+
+			if(exitExternal)
+				break;
+		}
+	}
+    return answer;
+}
