@@ -1,0 +1,76 @@
+#include <string>
+#include <vector>
+#include <iostream>
+#include <map>
+#include <sstream>
+
+using namespace std;
+
+typedef struct tag_INFO
+{
+    string command;
+    string id;
+    string name;
+}INFO,*PINFO;
+
+map<string,vector<string>> db;
+
+vector<string> answer;
+map<string,string> bfanswer;
+
+vector<string> split(string input, char delimiter) {
+    vector<string> answer;
+    stringstream ss(input);
+    string temp;
+
+    while (getline(ss, temp, delimiter)) {
+        answer.push_back(temp);
+    }
+
+    return answer;
+}
+
+
+vector<string> solution(vector<string> record) {
+    vector<string> answer;
+    
+      for(int i=0; i<record.size(); i++)
+    {
+        INFO inf;
+        inf.command="";
+        inf.id ="";
+        inf.name="";
+
+        vector<string> result = split(record[i], ' ');
+
+        inf.command = result[0];
+        inf.id = result[1];
+         if(result.size()==3)
+        {
+            inf.name = result[2];
+            bfanswer[inf.id]=inf.name;
+        }
+    }
+
+    for(int j=0; j<record.size(); j++)
+    {
+        INFO inf;
+        inf.command="";
+        inf.id ="";
+        inf.name="";
+
+        vector<string> result = split(record[j], ' ');
+
+        inf.command = result[0];
+        inf.id = result[1];
+        if(result.size()==3)
+            inf.name = result[2];
+
+        if(inf.command == "Enter")
+            answer.push_back(bfanswer[inf.id]+"님이 들어왔습니다.");
+        if(inf.command == "Leave")
+            answer.push_back(bfanswer[inf.id]+"님이 나갔습니다.");
+    }
+    
+    return answer;
+}
