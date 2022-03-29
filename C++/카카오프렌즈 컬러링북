@@ -1,0 +1,71 @@
+#include <vector>
+#include <map>
+#include <queue>
+using namespace std;
+
+// 전역 변수를 정의할 경우 함수 내에 초기화 코드를 꼭 작성해주세요.
+vector<int> solution(int m, int n, vector<vector<int>> picture) {
+    int mnmap[101][101] ={0,};
+
+    map<int,int> vdatacheck;
+
+    int Vdat[4] = {-1,1,0,0};
+    int Hdat[4] = {0,0,-1,1};
+
+    queue<pair<int,int>> vdataQ;
+
+    int sortOf = 0;
+    int maxCnt =0;
+
+    for(int i =0; i<picture.size(); i++)
+    {
+        for(int j=0; j<picture[0].size(); j++)
+        {
+            int push =0;
+
+            if(picture[i][j]==0 || mnmap[i][j]==1)
+                continue;
+
+            vdataQ.push(make_pair(i,j));
+            mnmap[i][j]=1;
+            push++;
+            sortOf++;
+
+            while(!vdataQ.empty())
+            {
+                int row = vdataQ.front().first;
+                int col = vdataQ.front().second;
+                int val = picture[row][col];
+
+                vdataQ.pop();
+
+ 
+                for(int k=0; k<4; k++)
+                {
+                    int nrow = row+Vdat[k];
+                    int ncol = col+Hdat[k];
+
+                    if(0<=nrow && 0<=ncol&& nrow<picture.size() && ncol<picture[0].size())
+                    {
+                        if(mnmap[nrow][ncol]==0 && picture[nrow][ncol]==val)
+                        {
+                            mnmap[nrow][ncol]=1;
+                            vdataQ.push(make_pair(nrow,ncol));
+                            push++;
+                        }
+                    }
+                }
+            }
+            if(maxCnt<push)
+            {
+                maxCnt = push;
+            }
+
+        }
+    }
+    
+    vector<int> answer(2);
+    answer[0] = sortOf;
+    answer[1] = maxCnt;
+    return answer;
+}
