@@ -1,0 +1,28 @@
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int solution(vector<int> budgets, int M) {
+    int answer = 0;
+
+    sort(begin(budgets),end(budgets));
+
+    int support = 0;
+
+    for(int i=0; i<budgets.size(); i++)
+    {
+        if(M-budgets[i]<0)
+            break;
+        else
+        {
+            M-=budgets[i];
+            support++;
+        }
+    }
+    
+    return support;
+}
