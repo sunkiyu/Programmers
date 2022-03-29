@@ -1,0 +1,90 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void MyCalc(vector<string> &number, vector<string> &op, long long &answer, int &opNo)
+{
+	long long ret = 0;
+	//priority op[0] >op[1] >op[2]
+	for (int oplen = 0; oplen < op.size(); oplen++)
+	{
+		for (int k = 0; k < number.size(); k++)
+		{
+			if (number[k] == op[opNo])
+			{
+				if (op[opNo] == "-")
+					ret = atol((number[k - 1]).c_str()) - atol((number[k + 1]).c_str());
+				else if (op[opNo] == "+")
+					ret = atol((number[k - 1]).c_str()) + atol((number[k + 1]).c_str());
+				else if (op[opNo] == "*")
+					ret = atol((number[k - 1]).c_str()) * atol((number[k + 1]).c_str());
+                
+                	number[k - 1] = to_string(ret);
+					number.erase(number.begin() + k,number.begin() + k+2);
+					--k;
+			}
+		}
+		opNo++;
+	}
+
+	if(answer < abs(atol(number[0].c_str())))
+		answer = abs(atol(number[0].c_str()));
+}
+
+long long solution(string expression) {
+    long long answer = 0;
+    
+    string cur_exp = "";
+	vector<string> cpyNumber,number, op;
+
+	int mopIndex = 0, opNo = 0, kindNo = 1;
+	int expLength = expression.length();
+	int oldIndex = 0;
+
+	for (int i = 0; i < expLength; i++)
+	{
+		if (expression[i] == '*' || expression[i] == '+' || expression[i] == '-')
+		{
+			if (find(op.begin(), op.end(), expression.substr(i, 1)) == op.end())
+				op.push_back(expression.substr(i, 1));
+
+			number.push_back(expression.substr(oldIndex, i - oldIndex));
+			number.push_back(expression.substr(i, 1));
+			oldIndex = i + 1;
+			cur_exp = expression.substr(i + 1, expression.length() - i);
+		}
+
+		if (cur_exp != ""&&cur_exp.find('*') > expLength && cur_exp.find('+') > expLength && cur_exp.find('-') > expLength)
+		{
+			number.push_back(expression.substr(oldIndex, expression.length() - i));
+			break;
+		}
+	}
+
+	int n = op.size();
+
+	for (int j = 0; j < op.size(); j++) kindNo *= n--;
+	
+	for (int no = 0; no < kindNo; no++)
+	{
+		cpyNumber = number;
+		opNo = 0;
+		MyCalc(cpyNumber, op, answer, opNo);
+		
+		if (no == 0 && kindNo == 6)
+			swap(op[1], op[2]);
+		else if (no == 1 && kindNo == 6)
+			swap(op[0], op[2]);
+		else if (no == 2 && kindNo == 6)
+			swap(op[1], op[2]);
+		else if (no == 3 && kindNo == 6)
+			swap(op[0], op[2]);
+		else if (no == 4 && kindNo == 6)
+			swap(op[1], op[2]);
+		else if (kindNo == 2)
+			swap(op[0], op[1]);
+	}
+    
+    return answer;
+}
