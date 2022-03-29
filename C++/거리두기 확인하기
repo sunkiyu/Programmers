@@ -1,0 +1,80 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+vector<int> solution(vector<vector<string>> places) {
+   
+    auto pScopeCheck = [&places](int i,int j, int k){
+        if((k+2 < places[i][j].length()) && places[i][j][k+2]=='P')
+        {
+            if(places[i][j][k+1]!='X')
+                return false;
+        }
+
+        if(j+2 < places[i].size() && places[i][j+2][k]=='P')
+        {
+            if(places[i][j+1][k]!='X')
+                return false;
+        }
+
+        if(k+1 < places[i][j].length() && j+1 < places[i].size() && places[i][j+1][k+1]=='P')
+        {
+            
+            if(places[i][j+1][k]!='X')
+                return false;
+            
+            if( places[i][j][k+1]!='X')
+                return false;
+        }
+        
+           if(k-1 >= 0 && j+1 <places[i].size() && places[i][j+1][k-1]=='P')
+        {
+            if(places[i][j+1][k]!='X' || places[i][j][k-1]!='X')
+                return false;
+        }
+        
+           if(k+1 < places[i][j].length())
+        {
+            if(places[i][j][k+1]=='P')
+                return false;
+        }
+
+        if(j+1 < places[i].size())
+        {
+            if(places[i][j+1][k]=='P')
+                return false;
+        }
+
+        return true;
+    };
+
+    vector<int> pRet;
+    for(int i=0; i<places.size(); i++)
+    {
+         bool pResult = true;
+        for(int j=0; j<places[i].size();j++)
+        {
+            for(int k=0; k<places[i][j].length(); k++)
+            {
+                if(places[i][j][k]=='P')
+                {
+                    if(pScopeCheck(i,j,k))
+                        continue;
+                    else
+                    {
+                        pResult = false;
+                        break;
+                    }
+                }
+            }
+            if(!pResult)
+                break;
+        }
+        if(pResult)
+            pRet.push_back(1);
+        else
+            pRet.push_back(0);
+    }
+    return pRet;
+}
