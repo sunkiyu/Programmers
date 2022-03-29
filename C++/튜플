@@ -1,0 +1,56 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+vector<int> solution(string s) {
+    vector<vector<int>> mapping;
+    vector<int> tmpmap;
+    string tmp = "";
+    vector<int> mansw;
+
+    for(int i=0; i<s.length(); i++)
+    {
+        if(i==0||i==s.length()-1)
+            continue; 
+
+        if(s[i]=='}')
+        {
+            tmpmap.push_back(stoi(tmp));
+            mapping.push_back(tmpmap);
+            tmpmap.clear();
+            tmp ="";
+            i++;
+            continue;
+        }
+
+        if(s[i]!='{')
+        {
+            if(s[i]!=',')
+            {
+                tmp+=s[i];
+                continue;
+            }
+            else if(s[i]==',')
+            {
+                tmpmap.push_back(stoi(tmp));
+                tmp="";
+            }
+        }
+    }
+
+    sort(mapping.begin(),mapping.end(),[](vector<int> &param,vector<int> &param2){if(param.size()<param2.size())return true; else return false;});
+
+    for(vector<int> &arg: mapping)
+    {
+        for(int &i : arg)
+        {
+            if(mansw.end()!=find_if(mansw.begin(), mansw.end(), [i](int param){if(i==param) return true; return false;}))
+                continue;
+            else
+                mansw.push_back(i);
+        }
+    }
+    return mansw;
+}
