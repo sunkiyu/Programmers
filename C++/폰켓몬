@@ -1,0 +1,14 @@
+#include <vector>
+#include <map>
+using namespace std;
+
+int solution(vector<int> nums)
+{
+      map<int,int> sortOf;
+    for(int i=0; i<nums.size(); i++){sortOf[nums[i]]++;};
+    int canFind = nums.size()/2;
+    if(sortOf.size()>=canFind)
+        return canFind;
+    else
+        return sortOf.size();
+}
