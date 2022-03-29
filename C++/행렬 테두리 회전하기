@@ -1,0 +1,63 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+
+vector<int> solution(int rows, int columns, vector<vector<int>> queries) {
+     int deployMap[102][102]={0,},dCnt =1;
+
+    vector<int> depAns;
+    for(int i=1; i<=rows; i++)
+        for(int j=1; j<=columns; j++)
+            deployMap[i][j] = dCnt++;
+
+    auto rotate = [&deployMap](int srow,int scol, int erow, int ecol)
+    {
+        int minVale = 2e9;
+        auto getMin = [](int a,int b){if(a<b)return a; return b;};
+
+        int RU = deployMap[srow][ecol];
+        int LD = deployMap[erow][scol];
+        minVale = getMin(minVale,RU);
+        minVale = getMin(minVale,LD);
+        for(int i=0; i<ecol - scol; i++)
+        {
+            deployMap[srow][ecol-i] = deployMap[srow][ecol-i-1];
+            minVale = getMin(minVale,deployMap[srow][ecol-i]);
+            deployMap[erow][scol+i] = deployMap[erow][scol+i+1];
+            minVale = getMin(minVale,deployMap[erow][scol+i]);
+        }
+
+        deployMap[srow][scol] = deployMap[srow+1][scol];
+        minVale = getMin(minVale,deployMap[srow][scol]);
+        deployMap[erow][ecol] = deployMap[erow-1][ecol];
+        minVale = getMin(minVale,deployMap[erow][ecol]);
+
+        for(int i=0; i<erow -srow; i++)
+        {
+            if(i==(erow-srow-1))
+            {
+                deployMap[srow+i][scol] = LD;
+                deployMap[erow-i][ecol] = RU;
+            }
+            else
+            {
+                deployMap[srow+i][scol] = deployMap[srow+1+i][scol];
+                minVale = getMin(minVale,deployMap[srow+i][scol]);
+                deployMap[erow-i][ecol] = deployMap[erow-1-i][ecol];
+                minVale = getMin(minVale,deployMap[erow-i][ecol]);
+            }
+        }
+
+        return minVale;
+    };
+
+    for(int i=0; i<queries.size(); i++)
+    {
+        depAns.push_back(rotate(queries[i][0],queries[i][1],queries[i][2],queries[i][3]));
+    }
+    
+    return depAns;
+
+}
