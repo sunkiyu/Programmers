@@ -1,0 +1,95 @@
+#include <string>
+#include <vector>
+#include <vector>
+#include <map>
+#include <algorithm>
+
+using namespace std;
+
+bool cmp(pair<int,double> a, pair<int,double> b)
+{
+      if(a.second == b.second)
+    {
+        if(a.first <b.first)
+            return true;
+        else
+            return false;
+    }
+    else
+    {
+        if(a.second < b.second)
+            return false;
+        else
+            return true;
+    }
+}
+
+
+vector<int> solution(int N, vector<int> stages) {
+    vector<int> answer;
+    
+           map<int,int> countM;
+    vector<pair<int,double>> percentage;
+
+
+    for(int i=1; i<=N; i++)
+    {
+        countM[i]=0;
+    }
+
+
+    for(int i=0; i< stages.size(); i++)
+    {
+        countM[stages[i]]++;
+    }
+
+
+     map<int,int>::iterator it = countM.begin();
+
+    for(int j=0; j<countM.size(); j++)
+    {
+        int fail =0;
+        double tot =0;
+
+        map<int,int>::iterator it2 = countM.begin();
+        int curstage = it->first;
+
+        for(int k=0; k<countM.size(); k++)
+        {
+
+            if(curstage<=it2->first)
+                tot+=it2->second;
+
+            if(curstage ==it2->first)
+                fail+=it2->second;
+
+            it2++;
+        }
+
+        if(it->first != N+1)
+        {
+            pair<int,double> arg;
+            arg.first = it->first;
+            if(tot)
+                arg.second = fail /(double)tot;
+            else
+            {
+                arg.first = it->first;
+                arg.second =0;
+            }
+
+
+            percentage.push_back(arg);
+        }
+        it++;
+    }
+
+    sort(percentage.begin(), percentage.end(), cmp);
+
+
+    for(int l=0; l< percentage.size(); l++)
+    {
+        answer.push_back(percentage[l].first);
+    }
+    return answer;
+}
