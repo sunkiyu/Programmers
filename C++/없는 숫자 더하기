@@ -1,0 +1,16 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(vector<int> numbers) {
+   int nCheck[10] = {0,}, nSum =0;
+    for(int i=0; i<numbers.size(); i++)
+        nCheck[numbers[i]]=1;
+    for(int i=0; i<10; i++)
+    {
+        if(!nCheck[i])
+            nSum+=i;
+    }
+    return nSum;
+}
