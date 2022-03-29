@@ -1,0 +1,59 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(string str) {
+    int answer = 0;
+    
+    string answer2 = "";
+
+	int ret = str.size();
+	int start = 0;
+	int compNo = 1;
+	int duplCnt = 0;
+
+	while (1)
+	{
+		if (start + compNo <= str.size())
+		{
+			if (str.substr(start, compNo) == str.substr(start + compNo, compNo))
+			{
+				start += compNo;
+				duplCnt++;
+			}
+			else
+			{
+				if (duplCnt)
+				{
+					answer2.append(to_string(++duplCnt) + str.substr(start - compNo, compNo));
+					duplCnt = 0;
+				}
+				else
+				{
+					answer2.append(str.substr(start, compNo));
+				}
+				start += compNo;
+
+				if ((compNo > (str.size()-start)) && ((str.size() - start) >=0))
+					answer2.append(str.substr(start, str.size() - start));
+			}
+		}
+		else
+		{
+			start = 0;
+			duplCnt = 0;
+			compNo++;
+			
+			if(ret>=answer2.size())
+				ret = answer2.size();
+
+			answer2.clear();
+
+			if (compNo >= str.size())
+				break;
+		}
+	}
+    answer = ret;
+    return answer;
+}
