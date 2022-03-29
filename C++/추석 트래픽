@@ -1,0 +1,78 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+vector<pair<int,bool>> times;
+
+void parseStr(string &param)
+{
+    int idx = param.rfind(' ');
+    string spandTime = param.substr(idx+1,(param.length()-2)-(idx+1)+1);
+
+    int spandMillsecond =stod(spandTime)*1000;
+
+    int idx2 = param.rfind(' ',idx-1);
+    string endTime = param.substr(idx2+1, idx - idx2);
+
+    int sumTime =0;
+    string hour = endTime.substr(0,2);
+    sumTime+=stoi(hour)*3600*1000;
+    string minute = endTime.substr(3,2);
+    sumTime+=stoi(minute)*60*1000;
+    string seconds = endTime.substr(6,2);
+    sumTime+=stoi(seconds)*1000;
+    string milliseconds = endTime.substr(9,3);
+    sumTime+=stoi(milliseconds);
+
+    int startTime = sumTime-spandMillsecond+1;
+
+    times.push_back(make_pair(startTime,true));
+    times.push_back(make_pair(sumTime+999,false));
+
+}
+
+bool Cmp(pair<int, bool> A, pair<int, bool> B)
+{
+    if (A.first <= B.first)
+    {
+        if (A.first == B.first)
+        {
+            if (A.second > B.second)
+            {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+
+int solution(vector<string> lines) {
+    int answer = 0;
+    for(int i=0; i<lines.size(); i++)
+    {
+        parseStr(lines[i]);
+    }
+
+    sort(times.begin(),times.end(),Cmp);
+
+    int max=0,count=0;
+    for(int i=0; i<times.size(); i++)
+    {
+        if(times[i].second)
+            count++;
+        else
+        {
+            count--;
+        }
+
+        if(max<count)
+            max = count;
+    }
+    
+    return max;
+}
