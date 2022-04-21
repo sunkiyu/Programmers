@@ -1,0 +1,61 @@
+#include <string>
+#include <vector>
+
+#define MAX 110
+using namespace std;
+
+vector<int> Win[MAX], Lose[MAX];
+bool Compare[MAX][MAX];
+
+void Make_Connect(int P1, int P2)
+{
+    for (int i = 0; i < Win[P1].size(); i++)
+    {
+        int P3 = Win[P1][i];
+        if (Compare[P3][P2] == false)
+        {
+            Compare[P2][P3] = Compare[P3][P2] = true;
+            Make_Connect(P3, P2);
+            Win[P2].push_back(P3);
+            Lose[P3].push_back(P2);
+        }
+    }
+    for (int i = 0; i < Lose[P2].size(); i++)
+    {
+        int P3 = Lose[P2][i];
+        if (Compare[P3][P1] == false)
+        {
+            Compare[P3][P1] = Compare[P1][P3] = true;
+            Make_Connect(P1, P3);
+            Win[P3].push_back(P1);
+            Lose[P1].push_back(P3);
+        }
+    }
+}
+
+
+int solution(int n, vector<vector<int>> results) {
+ int answer = 0;
+
+    for (int i = 0; i < results.size(); i++)
+    {
+        int P1 = results[i][0];
+        int P2 = results[i][1];
+
+        if (Compare[P1][P2] == false)
+        {
+            Make_Connect(P1, P2);
+            Compare[P1][P2] = true;
+            Compare[P2][P1] = true;
+            Win[P2].push_back(P1);
+            Lose[P1].push_back(P2);
+        }
+    }
+
+    for (int i = 1; i <= n; i++)
+        if (Win[i].size() + Lose[i].size() == n - 1) answer++;
+
+
+
+    return answer;
+}
