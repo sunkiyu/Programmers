@@ -1,0 +1,29 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int solution(vector<vector<int>> triangle) {
+     vector<vector<int>> maxSum(501,vector<int>(501,-1));
+    maxSum[0][0] = triangle[0][0];
+    maxSum[1][0] = maxSum[0][0]+triangle[1][0];
+    maxSum[1][1] = maxSum[0][0]+triangle[1][1];
+
+    auto getMaxSum = [&](auto a, auto b){if(a<b) return b; return a;};
+    for(int i=2; i<triangle.size(); i++)
+    {
+        for(int j=0; j<triangle[i].size(); j++)
+        {
+            if(j==0)
+                maxSum[i][j] = maxSum[i-1][j]+triangle[i][j];
+            else if(j==triangle[i].size()-1)
+                maxSum[i][j] = maxSum[i-1][j-1] + triangle[i][j]; 
+            else
+                maxSum[i][j] = getMaxSum(maxSum[i-1][j-1]+triangle[i][j],maxSum[i-1][j]+triangle[i][j]);
+        }
+    }
+    sort(maxSum[triangle.size()-1].begin(),maxSum[triangle.size()-1].end(), greater<int>());
+    return maxSum[triangle.size()-1][0];
+
+}
