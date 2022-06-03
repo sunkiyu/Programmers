@@ -1,0 +1,51 @@
+#include <string>
+#include <vector>
+#include <map>
+#include <set>
+
+using namespace std;
+
+map<string,int> reportMap;
+map<pair<string,string>,int> history;
+map<string,set<string>> emailed;
+map<string,int> ans;
+vector<int> solution(vector<string> id_list, vector<string> report, int k) {
+    vector<int> answer;
+    
+    for(int i=0; i<report.size(); i++)
+    {
+        string cur = report[i];
+        int idx = cur.find(' ');
+	    string first = cur.substr(0, idx);
+	    string second = cur.substr(idx + 1, cur.length() - (idx + 1) + 1);
+        if(history.find({first,second})==history.end())
+        {
+            emailed[second].insert(first);
+            reportMap[second]++;
+        }
+        history[{first,second}]++;
+    }
+    
+    using Iterator = map<string,int>::iterator;
+    
+    for(Iterator it = reportMap.begin(); it!=reportMap.end(); it++)
+    {
+        if((*it).second>=k)
+        {
+            using Iterator2 = set<string>::iterator;
+            for(Iterator2 it2 = emailed[(*it).first].begin(); it2!=emailed[(*it).first].end(); it2++)
+            {
+                ans[(*it2)]++;
+            }
+        }
+    }
+    
+    for(int i=0; i<id_list.size(); i++)
+    {
+        string cur = id_list[i];
+        answer.push_back(ans[cur]);
+    }
+    
+    
+    return answer;
+}
