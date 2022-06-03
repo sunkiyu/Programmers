@@ -1,0 +1,102 @@
+#include <string>
+#include <vector>
+#include <functional>
+
+using namespace std;
+
+vector<int> solution(int arrow, vector<int> apeach) {
+
+    int lionMax = 0;
+    int maxIdx = 0;
+    vector<int> candiate(10,0);
+    function<void(int,int,int,vector<int>)> lionDFS = [&](int idx,int remainArrow,int score,vector<int> scoreVec)
+    {
+        if(remainArrow == 0)
+        {
+            int apeachScore = 0;
+            scoreVec.resize(11,0);
+            for(int i=0; i<apeach.size(); i++)
+            {
+                if(apeach[i]> scoreVec[i] ||(apeach[i] ==scoreVec[i]) && apeach[i]!=0 &&scoreVec[i]!=0)
+                    apeachScore+=(10-i);
+            }
+            if(apeachScore>= score)return;
+            score = score - apeachScore;
+            if(lionMax<=score)
+            {
+                if(lionMax < score)
+                {
+                    lionMax = max(lionMax, score);
+                    maxIdx = idx-1;
+                    candiate = scoreVec;
+                }
+                else
+                {
+                    idx-=1;
+                    if(idx>=maxIdx)
+                    {
+                        //more low score Use
+                        if(idx>maxIdx)
+                        {
+                            maxIdx =idx;
+                            candiate = scoreVec;
+                            candiate.resize(11,0);
+                        }
+                        else
+                        {
+                            //if same compare Cnt
+                            if(scoreVec[idx]>candiate[idx])
+                                candiate = scoreVec;
+                            else
+                            {
+                                idx--;
+                                while(idx>=0 && scoreVec[idx]==candiate[idx])
+                                {
+                                    idx--;
+                                }
+                                if(idx>=0 && scoreVec[idx] > candiate[idx])
+                                    candiate = scoreVec;
+                                else
+                                    return ;
+                            }
+                        }
+                    }
+                }
+                return;
+            }
+        }
+
+        for(int i=idx; i<=10; i++)
+        {
+            int apchCnt = apeach[i];
+
+            if(remainArrow-(apchCnt+1)>=0)
+            {
+                scoreVec.push_back(apchCnt+1);
+                lionDFS(i+1,remainArrow-(apchCnt+1),score+(10-i), scoreVec);
+                scoreVec.pop_back();
+                scoreVec.push_back(0);
+                lionDFS(i+1,remainArrow,score, scoreVec);
+            }
+            else
+            {
+                 if(i==10 && remainArrow>0)
+                {
+                    scoreVec.push_back(remainArrow);
+                    lionDFS(i+1,0,score, scoreVec);
+                }
+                else
+                {
+                    scoreVec.push_back(0);
+                    lionDFS(i+1,remainArrow,score, scoreVec);
+                }
+            }
+        }
+    };
+    vector<int> ansVec;
+    lionDFS(0,arrow,0,ansVec);
+
+    if(candiate == vector<int>(10,0)) return vector<int>(1,-1);
+    else return candiate;
+
+}
