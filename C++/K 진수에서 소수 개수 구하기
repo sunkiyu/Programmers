@@ -1,0 +1,73 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(int n, int k) {
+    using LL = long long;
+    int sosu = n;
+    int jinbub =k;
+
+    int sosuCnt=0;
+
+    string convertZin = "";
+    while(sosu>=jinbub)
+    {
+        convertZin.insert(0, 1, sosu%jinbub + '0');
+        sosu /=jinbub;
+    }
+    if(sosu>0) convertZin.insert(0,1,sosu+'0');
+
+    auto IsPrimeNum = [&](long long param)
+    {
+        if(param<=1) return false;
+        if(param==2) return true;
+        LL divCnt=0;
+        for(LL i=2; i*i<=param; i++){
+            if(param % i == 0) return false;
+        }
+        return true;
+         return true;
+    };
+    char left=0;
+    string tmpSosu="";
+ 
+    for(int i=0; i<convertZin.length(); i++)
+    {
+        char cur = convertZin[i];
+        if(cur!='0')
+        {
+            tmpSosu+=cur;
+        }
+        else if(cur=='0')
+        {
+            //소수 양쪽 0
+            if(tmpSosu!="" && left == '0')
+            {
+                if(IsPrimeNum(stol(tmpSosu)))
+                    sosuCnt ++;
+            }
+            //오른쪽에만 0 이있고 왼쪽에 아무것도 없음
+            else if(tmpSosu!="" && left==0)
+            {
+                if(IsPrimeNum(stol(tmpSosu)))
+                    sosuCnt++;
+            }
+           
+            tmpSosu = "";
+            left = '0';
+        }
+    }
+    if(tmpSosu!="" && left ==0)
+    {
+        if(IsPrimeNum(stol(tmpSosu)))
+            sosuCnt++;
+    }
+    if(tmpSosu!="" && left =='0')
+    {
+        if(IsPrimeNum(stol(tmpSosu)))
+            sosuCnt ++;
+    }
+    
+    return sosuCnt;
+}
