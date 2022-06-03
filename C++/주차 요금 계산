@@ -1,0 +1,80 @@
+#include <string>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+map<string,tuple<int,int,string>> carInfo;
+
+vector<int> solution(vector<int> fees, vector<string> records) {
+    vector<int> answer;
+    int dfTime,dfVal,plusTime, plusVal;
+    dfTime = fees[0];
+    dfVal = fees[1];
+    plusTime = fees[2];
+    plusVal = fees[3];
+    
+     int tm2359 = 23*60 + 59;
+    for(int i=0; i<records.size(); i++)
+    {
+            string curCar = records[i];
+            int sep1 =  curCar.find(' ');
+            int sep2 =  curCar.find(' ',sep1+1);
+            string time = curCar.substr(0,sep1);
+            string carNo = curCar.substr(sep1+1, sep2 - sep1 -1);
+            string info = curCar.substr(sep2 +1, curCar.length() - sep2-1);
+
+            int hour = stoi(time.substr(0,time.find(':')));
+            int minute = stoi(time.substr(time.find(':')+1,time.length()-time.find(':')-1));
+            int toMinute = hour*60 + minute;
+
+            if(carInfo.find(carNo)==carInfo.end())
+            {
+                carInfo[carNo] = {0,toMinute,info};
+            }
+            else
+            {
+                if(get<2>(carInfo[carNo])=="IN")
+                {
+                    get<2>(carInfo[carNo]) = "OUT";
+                    get<0>(carInfo[carNo]) += toMinute - get<1>(carInfo[carNo]);
+                    get<1>(carInfo[carNo]) = toMinute;
+                }
+                else if(get<2>(carInfo[carNo])=="OUT")
+                {
+                    get<2>(carInfo[carNo]) = "IN";
+                    get<1>(carInfo[carNo]) = toMinute;
+                }
+            }
+    }
+
+    using Iterator = map<string,tuple<int,int,string>>::iterator;
+
+    for(Iterator it = carInfo.begin(); it!=carInfo.end(); it++)
+    {
+        if(get<2>((*it).second)=="IN")
+        {
+            int lastTm  =get<1>((*it).second);
+            int diff = tm2359 - lastTm;
+            get<0>((*it).second) += diff;
+        }
+
+        if(get<0>((*it).second)<dfTime)
+            answer.push_back(dfVal);
+        else
+        {
+            int multipleVal =0;
+            if((get<0>((*it).second) - dfTime)%plusTime)
+            {
+                multipleVal = ((get<0>((*it).second) - dfTime))/plusTime +1;
+            }
+            else
+            {
+                multipleVal = ((get<0>((*it).second) - dfTime))/plusTime;
+            }
+            answer.push_back(dfVal + (multipleVal * plusVal));
+        }
+    }
+    
+    return answer;
+}
