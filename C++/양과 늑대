@@ -1,0 +1,65 @@
+#include <string>
+#include <vector>
+#include <functional>
+
+using namespace std;
+
+vector<vector<int>> ywNode(20,vector<int>(20,0));
+vector<int> ywConn[20];
+int ywVisit[20][20][20] ={0,};
+
+int solution(vector<int> ywInfo, vector<vector<int>> edges) {
+    
+    int answer = 0;
+    int maxY =0;
+    int ywSz = ywInfo.size();
+    
+    for(int i=0; i<edges.size(); i++)
+    {
+        auto pair = edges[i];
+        ywConn[pair[0]].push_back(pair[1]);
+        ywConn[pair[1]].push_back(pair[0]);
+    }
+   
+    ywInfo[0] = 2;
+    ywVisit[0][1][0] =1;
+
+    function<void(int,int,int)> ywDFS = [&](int node,int yang, int wolf)
+    {
+        if(node == 0) maxY = max(maxY,yang);
+        for(int i=0; i<ywConn[node].size(); i++)
+        {
+            int next = ywConn[node][i];
+
+            if(ywInfo[next]==1 && yang > wolf+1)
+            {
+                ywInfo[next] =2;
+                ywVisit[next][yang][wolf+1] =1;
+                ywDFS(next,yang,wolf+1);
+                ywVisit[next][yang][wolf+1] =0;
+                ywInfo[next] =1;
+            }
+
+            if(ywInfo[next]==0)
+            {
+                ywInfo[next]=2;
+                ywVisit[next][yang+1][wolf] = 1;
+                ywDFS(next,yang+1,wolf);
+                ywVisit[next][yang+1][wolf] = 0;
+                ywInfo[next]=0;
+            }
+
+            if(ywInfo[next]==2 && !ywVisit[next][yang][wolf])
+            {
+                ywVisit[next][yang][wolf] =1;
+                ywDFS(next,yang,wolf);
+                ywVisit[next][yang][wolf] =0;
+
+            }
+        }
+    };
+
+    ywDFS(0,1,0);
+
+    return maxY;
+}
